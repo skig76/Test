@@ -1,0 +1,52 @@
+name: Generate SEO Article
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: Topic for the Russian SEO article
+        required: true
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate article draft
+        id: generate
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          article_path=$(python scripts/generate_article.py "${{ inputs.topic }}")
+          echo "article_path=${article_path}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          base: main
+          branch: seo-article/${{ github.run_id }}-${{ github.run_attempt }}
+          commit-message: "Add draft SEO article: ${{ inputs.topic }}"
+          title: "Draft SEO article: ${{ inputs.topic }}"
+          body: |
+            This Pull Request contains a draft SEO article generated for manual review.
+
+            Topic: `${{ inputs.topic }}`
+            File: `${{ steps.generate.outputs.article_path }}`
+
+            Review the content carefully before merging.
+            No auto-merge or publishing is configured.
+          add-paths: |
+            ${{ steps.generate.outputs.article_path }}
