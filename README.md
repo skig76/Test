@@ -1,15 +1,17 @@
-# Elena SEO Writer / Agent Writer Lite
+# Elena SEO Site + Agent Writer Lite
 
-This repository contains a minimal test prototype that generates a draft SEO article in Russian through Google Gemini, saves it to the repository, and opens a Pull Request for human review.
+This repository contains the static Elena Gofman Cosmetology website and a minimal Agent Writer Lite prototype. The writer generates a Russian SEO draft through Google Gemini, saves it to the repository, and opens a Pull Request for human review.
 
 This test version is intentionally limited:
 
 - manual запуск через GitHub Actions;
 - ручной ввод темы статьи;
-- сохранение результата только в GitHub;
+- сохранение результата в `content/blog/`;
 - проверка человеком через Pull Request;
 - никакой автопубликации на сайт;
 - никаких тяжёлых компонентов вроде PostgreSQL, Prisma, Next.js или внешних SEO-платформ.
+
+The current public website is stored in `public/`. It includes the home page, four service pages, shared assets, `robots.txt`, and `sitemap.xml`.
 
 ## What the system does
 
@@ -67,3 +69,33 @@ After the workflow finishes:
 4. merge manually only after human approval.
 
 This repository does not auto-merge and does not auto-publish anything.
+
+## Website source
+
+Cloudflare serves the static files from `public/`:
+
+- `public/index.html`
+- `public/tipulei-panim-beer-yaakov/index.html`
+- `public/akne-beer-yaakov/index.html`
+- `public/pigmentatzia-beer-yaakov/index.html`
+- `public/rf-ipl-beer-yaakov/index.html`
+- `public/assets/`
+- `public/robots.txt`
+- `public/sitemap.xml`
+
+The Cloudflare Workers Static Assets configuration is in `wrangler.jsonc`.
+
+## Local preview
+
+```bash
+npm install
+npm run dev
+```
+
+## Manual deployment
+
+```bash
+npm run deploy
+```
+
+Deployment remains manual. Merging an article Pull Request does not publish it automatically.
