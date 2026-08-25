@@ -10,7 +10,7 @@ import urllib.request
 from pathlib import Path
 
 
-MODEL_NAME = "gemini-2.5-flash"
+MODEL_NAME = "gemini-3.6-flash"
 API_URL = (
     "https://generativelanguage.googleapis.com/v1beta/models/"
     f"{MODEL_NAME}:generateContent"
