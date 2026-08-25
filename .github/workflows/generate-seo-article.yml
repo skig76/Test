@@ -29,8 +29,9 @@ jobs:
         id: generate
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TOPIC: ${{ inputs.topic }}
         run: |
-          article_path=$(python scripts/generate_article.py "${{ inputs.topic }}")
+          article_path=$(python scripts/generate_article.py "$TOPIC")
           echo "article_path=${article_path}" >> "$GITHUB_OUTPUT"
 
       - name: Create Pull Request
