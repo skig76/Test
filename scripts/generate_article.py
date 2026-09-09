@@ -129,7 +129,7 @@ def compose_markdown(title: str, description: str, article: str) -> str:
             f"description: {yaml_quote(description)}",
             f"date: {yaml_quote(today)}",
             "language: ru",
-            "status: draft",
+            "status: published",
             "---",
             "",
         ]

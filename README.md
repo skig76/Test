@@ -1,17 +1,17 @@
 # Elena SEO Site + Agent Writer Lite
 
-This repository contains the static Elena Gofman Cosmetology website and a minimal Agent Writer Lite prototype. The writer generates a Russian SEO draft through Google Gemini, saves it to the repository, and opens a Pull Request for human review.
+This repository contains the static Elena Gofman Cosmetology website, the Gemini article writer, and the publishing bridge that turns approved Markdown articles into static blog pages.
 
-This test version is intentionally limited:
+The workflow keeps approval and deployment separate:
 
-- manual запуск через GitHub Actions;
-- ручной ввод темы статьи;
-- сохранение результата в `content/blog/`;
-- проверка человеком через Pull Request;
-- никакой автопубликации на сайт;
-- никаких тяжёлых компонентов вроде PostgreSQL, Prisma, Next.js или внешних SEO-платформ.
+- article generation starts manually through GitHub Actions;
+- Gemini saves the Russian article in `content/blog/`;
+- GitHub opens a separate Pull Request for human review;
+- a human decides whether to merge it;
+- the site build converts approved Markdown into HTML in `dist/blog/`;
+- deployment to Cloudflare remains a separate manual action.
 
-The current public website is stored in `public/`. It includes the home page, four service pages, shared assets, `robots.txt`, and `sitemap.xml`.
+There is no automatic merge and no automatic deployment.
 
 ## What the system does
 
@@ -20,8 +20,9 @@ When you run the GitHub Actions workflow manually and provide a topic:
 1. the workflow calls `scripts/generate_article.py`;
 2. the script sends the prompt to Google Gemini using `GEMINI_API_KEY`;
 3. Gemini returns a Markdown article in Russian;
-4. the script saves the draft article in `content/blog/`;
-5. the workflow creates a separate branch and opens a Pull Request into `main`.
+4. the script saves the article in `content/blog/`;
+5. the workflow creates a separate branch and opens a Pull Request into `main`;
+6. after review and manual merge, the next manual site build includes the article.
 
 ## Add `GEMINI_API_KEY`
 
@@ -55,9 +56,11 @@ title: "..."
 description: "..."
 date: "YYYY-MM-DD"
 language: ru
-status: draft
+status: published
 ---
 ```
+
+`status: published` makes the file eligible for the site build. It does not deploy the branch. The approval gate is the manual Pull Request merge, and publishing still requires a separate manual deployment.
 
 ## How to review the Pull Request
 
@@ -68,11 +71,23 @@ After the workflow finishes:
 3. request edits if needed;
 4. merge manually only after human approval.
 
-This repository does not auto-merge and does not auto-publish anything.
+This repository does not auto-merge or auto-deploy.
+
+## Build the site
+
+```bash
+npm ci
+npm test
+npm run build
+```
+
+The build validates article metadata, copies `public/` to a fresh `dist/` directory, creates the blog index and article pages, and adds their URLs to `dist/sitemap.xml`. It does not modify the existing source pages in `public/`.
+
+`dist/` is generated output and is not committed. The npm commands can find Python 3 through `py`, `python`, or `python3`, which supports Windows as well as Linux and macOS.
 
 ## Website source
 
-Cloudflare serves the static files from `public/`:
+The existing website source remains in `public/`:
 
 - `public/index.html`
 - `public/tipulei-panim-beer-yaakov/index.html`
@@ -83,14 +98,17 @@ Cloudflare serves the static files from `public/`:
 - `public/robots.txt`
 - `public/sitemap.xml`
 
-The Cloudflare Workers Static Assets configuration is in `wrangler.jsonc`.
+Blog Markdown remains in `content/blog/`. Templates are in `templates/`, and the build logic is in `scripts/build_site.py`.
+
+Cloudflare serves the generated `dist/` directory according to `wrangler.jsonc`.
 
 ## Local preview
 
 ```bash
-npm install
 npm run dev
 ```
+
+This builds the site first and then starts Wrangler locally.
 
 ## Manual deployment
 
@@ -98,4 +116,4 @@ npm run dev
 npm run deploy
 ```
 
-Deployment remains manual. Merging an article Pull Request does not publish it automatically.
+This rebuilds the site and starts a real Wrangler deployment. Run it only after reviewing the merged changes. GitHub Actions validates the bundle with `wrangler deploy --dry-run`; it never performs the real deployment.

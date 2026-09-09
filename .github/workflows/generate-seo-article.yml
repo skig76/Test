@@ -42,12 +42,13 @@ jobs:
           commit-message: "Add draft SEO article: ${{ inputs.topic }}"
           title: "Draft SEO article: ${{ inputs.topic }}"
           body: |
-            This Pull Request contains a draft SEO article generated for manual review.
+            This Pull Request contains an SEO article generated for manual review.
 
             Topic: `${{ inputs.topic }}`
             File: `${{ steps.generate.outputs.article_path }}`
 
             Review the content carefully before merging.
-            No auto-merge or publishing is configured.
+            Merging approves the article for the next manual site build and deployment.
+            No auto-merge or automatic deployment is configured.
           add-paths: |
             ${{ steps.generate.outputs.article_path }}
