@@ -1,0 +1,11 @@
+# Consolidate the legacy landing and service URLs on the primary domain.
+# Blog URLs remain on the legacy Worker until the publishing pipeline is migrated.
+/ https://elenagofmann.co.il/ 301
+/tipulei-panim-beer-yaakov https://elenagofmann.co.il/tipulei-panim-beer-yaakov/ 301
+/tipulei-panim-beer-yaakov/ https://elenagofmann.co.il/tipulei-panim-beer-yaakov/ 301
+/akne-beer-yaakov https://elenagofmann.co.il/akne-beer-yaakov/ 301
+/akne-beer-yaakov/ https://elenagofmann.co.il/akne-beer-yaakov/ 301
+/pigmentatzia-beer-yaakov https://elenagofmann.co.il/pigmentatzia-beer-yaakov/ 301
+/pigmentatzia-beer-yaakov/ https://elenagofmann.co.il/pigmentatzia-beer-yaakov/ 301
+/rf-ipl-beer-yaakov https://elenagofmann.co.il/rf-ipl-beer-yaakov/ 301
+/rf-ipl-beer-yaakov/ https://elenagofmann.co.il/rf-ipl-beer-yaakov/ 301
